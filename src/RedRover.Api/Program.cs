@@ -3,10 +3,17 @@ using RedRover.Api.Data;
 using RedRover.Api.Hubs;
 using RedRover.Api.Services;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions
+{
+    Args = args,
+    ContentRootPath = AppContext.BaseDirectory,
+    WebRootPath = Path.Combine(AppContext.BaseDirectory, "wwwroot")
+});
+builder.WebHost.UseUrls("http://localhost:5000");
 
 // 1. Database Context (SQLite for local zero-config, switchable to Azure SQL via connection string)
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? "Data Source=redrover.db";
+var dbPath = Path.Combine(AppContext.BaseDirectory, "redrover.db");
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? $"Data Source={dbPath}";
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(connectionString));
 
@@ -65,11 +72,39 @@ app.UseSwaggerUI(c =>
 
 app.UseCors("AllowClient");
 
+// Serve embedded React 18 UI bundle
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 app.UseRouting();
 app.UseAuthorization();
 
 // Route mappings
 app.MapControllers();
 app.MapHub<AbsenceHub>("/hubs/absences");
+app.MapFallbackToFile("index.html");
+
+// Auto-launch default browser on application startup
+app.Lifetime.ApplicationStarted.Register(() =>
+{
+    try
+    {
+        Console.WriteLine("\n=======================================================");
+        Console.WriteLine("  Red Rover K-12 Absence Management System is running! ");
+        Console.WriteLine("  Live Application: http://localhost:5000             ");
+        Console.WriteLine("  Swagger API Docs: http://localhost:5000/swagger     ");
+        Console.WriteLine("=======================================================\n");
+
+        System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
+        {
+            FileName = "http://localhost:5000",
+            UseShellExecute = true
+        });
+    }
+    catch
+    {
+        // Non-interactive or container environment
+    }
+});
 
 app.Run();

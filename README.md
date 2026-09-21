@@ -6,13 +6,24 @@ An enterprise reference implementation of a K-12 substitute placement and absenc
 
 ## 1. Quick Setup & Run Guide
 
-### Prerequisites
-- [.NET SDK (v8.0 or v10.0)](https://dotnet.microsoft.com/download)
-- [Node.js (v18+) & npm](https://nodejs.org/)
+### ⚡ Option A: Zero-Setup Standalone Executable (Recommended)
+
+**No Node.js, npm, or .NET SDK installation required!**
+
+1. **[Download RedRover-Demo-win-x64.zip (GitHub Release v1.0.0)](https://github.com/hychenengineer/red-rover-demo/releases/download/v1.0.0/RedRover-Demo-win-x64.zip)**
+2. Extract the ZIP archive anywhere on a Windows machine.
+3. Double-click **`RedRover.Demo.exe`**.
+4. The application initializes SQLite, seeds district data, and **automatically opens your browser to `http://localhost:5000`** with the full React 18 UI, REST API, and SignalR live!
 
 ---
 
-### Step 1: Start the Backend (.NET Web API)
+### 🛠️ Option B: Run from Source (.NET & Node.js)
+
+#### Prerequisites
+- [.NET SDK (v8.0 or v10.0)](https://dotnet.microsoft.com/download)
+- [Node.js (v18+) & npm](https://nodejs.org/)
+
+#### Step 1: Start the Backend (.NET Web API)
 Open a terminal and start the .NET Web API:
 
 ```bash
@@ -20,14 +31,12 @@ cd src/RedRover.Api
 dotnet run
 ```
 
-- **API URL**: `http://localhost:5000`
+- **Application & API URL**: `http://localhost:5000` *(serves both embedded React UI and REST API)*
 - **Interactive Swagger Docs**: `http://localhost:5000/swagger`
 - **Database**: An SQLite database (`redrover.db`) is automatically initialized and seeded with schools, teachers, substitutes, and baseline absence records on startup.
 
----
-
-### Step 2: Start the Frontend (React 18 UI)
-Open a second terminal and start the Vite frontend development server:
+#### Step 2: Start the Frontend for Active Development (Optional)
+If modifying React source code with Vite Hot Module Reloading:
 
 ```bash
 cd src/redrover-ui
@@ -35,12 +44,9 @@ npm install
 npm run dev
 ```
 
-- **Application URL**: `http://localhost:5173`
-- The React frontend connects directly to the .NET API at `http://localhost:5000` via Vite reverse-proxy for all REST endpoints (`/api`) and SignalR WebSockets (`/hubs`).
+- **Vite Dev URL**: `http://localhost:5173` (proxies `/api` and `/hubs` to port 5000)
 
----
-
-### Step 3 (Optional): Start the Azure Background Worker
+#### Step 3 (Optional): Start the Azure Background Worker
 To run the Azure Functions SMS burst dispatcher:
 
 ```bash

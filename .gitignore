@@ -7,6 +7,10 @@ build/
 /temp_ffmpeg/
 /_crawler_archive/
 /data/
+/dist-exe/
+/dist-standalone/
+/release-win-x64/
+*.zip
 
 # .NET / C#
 bin/
