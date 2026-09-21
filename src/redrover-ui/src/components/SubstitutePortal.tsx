@@ -35,17 +35,15 @@ export const SubstitutePortal: React.FC<SubstitutePortalProps> = ({
   onShiftClaimed,
 }) => {
   // 1. Substitute Selector Dropdown
-  const [selectedSubId, setSelectedSubId] = useState<string>(substitutes[0]?.id || 's1');
+  const [selectedSubId, setSelectedSubId] = useState<string>(substitutes[0]?.id || '');
   
-  const currentSub = substitutes.find(s => s.id === selectedSubId) || substitutes[0] || {
-    id: 's1',
-    fullName: 'Alex Martinez',
-    phoneNumber: '(614) 555-0192',
-    certifications: 'Science, Chemistry, General K-12',
-    email: 'alex.sub@gmail.com',
-    isAvailableToday: true,
-    hoursWorkedThisWeek: 14
-  };
+  React.useEffect(() => {
+    if (!selectedSubId && substitutes.length > 0) {
+      setSelectedSubId(substitutes[0].id);
+    }
+  }, [substitutes, selectedSubId]);
+
+  const currentSub = substitutes.find(s => s.id === selectedSubId) || substitutes[0];
 
   const [declinedIds, setDeclinedIds] = useState<string[]>([]);
   const [claimFeedback, setClaimFeedback] = useState<{ id: string; success: boolean; message: string } | null>(null);
@@ -108,6 +106,14 @@ export const SubstitutePortal: React.FC<SubstitutePortalProps> = ({
     });
     onShiftClaimed();
   };
+
+  if (!currentSub) {
+    return (
+      <div className="rr-portal-container flex items-center justify-center p-12 text-slate-500">
+        <p>Loading substitute profiles from backend...</p>
+      </div>
+    );
+  }
 
   // Get initials for current avatar
   const initials = currentSub.fullName

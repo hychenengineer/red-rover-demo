@@ -30,19 +30,16 @@ export const TeacherPortal: React.FC<TeacherPortalProps> = ({
   teachers,
   onAbsenceCreated,
 }) => {
-  // Default fallback teacher list if API hasn't returned yet
-  const defaultTeachers: Teacher[] = [
-    { id: 't1', schoolId: '1', fullName: 'Sarah Johnson', department: 'Science', email: 's.johnson@district.org', roomNumber: 'Room 204' },
-    { id: 't2', schoolId: '1', fullName: 'Robert Davis', department: 'Social Studies', email: 'r.davis@district.org', roomNumber: 'Room 112' },
-    { id: 't3', schoolId: '2', fullName: 'Emily White', department: 'English / Language Arts', email: 'e.white@district.org', roomNumber: 'Room 305' },
-    { id: 't4', schoolId: '3', fullName: 'Michael Chen', department: 'Grade 4 Classroom', email: 'm.chen@district.org', roomNumber: 'Room 12' },
-  ];
-
-  const teacherList = teachers && teachers.length > 0 ? teachers : defaultTeachers;
-  
   // 1. Teacher Persona Dropdown State
-  const [selectedTeacherId, setSelectedTeacherId] = useState<string>(teacherList[0]?.id || 't1');
-  const currentTeacher = teacherList.find(t => t.id === selectedTeacherId) || teacherList[0];
+  const [selectedTeacherId, setSelectedTeacherId] = useState<string>(teachers[0]?.id || '');
+
+  React.useEffect(() => {
+    if (!selectedTeacherId && teachers.length > 0) {
+      setSelectedTeacherId(teachers[0].id);
+    }
+  }, [teachers, selectedTeacherId]);
+
+  const currentTeacher = teachers.find(t => t.id === selectedTeacherId) || teachers[0];
 
   // Interactive calendar state
   const [calYear, setCalYear] = useState<number>(2026);
@@ -187,7 +184,7 @@ export const TeacherPortal: React.FC<TeacherPortalProps> = ({
                   onChange={e => setSelectedTeacherId(e.target.value)}
                   className="rr-sub-select-dropdown"
                 >
-                  {teacherList.map(t => (
+                  {teachers.map(t => (
                     <option key={t.id} value={t.id}>
                       {t.fullName} — {t.department} ({t.roomNumber})
                     </option>
