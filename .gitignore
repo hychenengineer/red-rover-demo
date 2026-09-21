@@ -1,0 +1,45 @@
+# ==========================================
+# Dependencies & Build Artifacts
+# ==========================================
+node_modules/
+dist/
+build/
+/temp_ffmpeg/
+/_crawler_archive/
+/data/
+
+# .NET / C#
+bin/
+obj/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.db
+*.db-shm
+*.db-wal
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+env/
+venv/
+
+# Environment & Secrets
+.env
+.env.local
+.env.*.local
+
+# IDEs
+.vs/
+.vscode/
+.idea/
+
+# OS Files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+.DS_Store
